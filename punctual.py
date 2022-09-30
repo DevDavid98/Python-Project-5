@@ -6,7 +6,7 @@ time_db = SqliteDatabase('punctual.db')
 
 
 class User(Model):
-    username = CharField()
+    username = CharField(unique = True)
     email = CharField(unique = True)
     password = CharField()
     
@@ -43,7 +43,7 @@ def start():
         user_input = str(input('Enter your option here: '))
         if user_input == '':
             clear()
-            search_user()
+            sign_in()
         elif user_input.lower() == 'c':
             clear()
             create_user()
@@ -56,50 +56,59 @@ def create_user():
         Enter your information below
         to create your account for Punctual.
     """)
-    user_email = str(input('Email: '))
     user_name = str(input('Username: '))
+    user_email = str(input('Email: '))
     pass_word = str(input('Password: '))
     
     user_info = User.create(username = user_name, email = user_email, password = pass_word)
     user_info.save()
+    clear()
     print('User created')
     
-
-def confirmation(search_email = None, search_password = None):
-    user_info = User.select()
-    
-    for item in user_info:
-        if item.email == search_email:
-            print('hi')
-        if search_email not in item.email:
-            clear()
-            while True:
-                user_input = input("Email does not exist would you like to create one? [Y/N]: ")
-                if user_input.lower() == 'y':
-                    clear()
-                    create_user()
-                elif user_input.lower() == 'n':
-                    clear()
-                    start()
-                else:
-                    print("Please enter a valid option.")
+def search_user(user_name = None, user_password = None):
+    all_users = User.select()
+    for user in all_users:
+        if user_name == user.username and user_password == user.password:
+            query_user = all_users.where(
+                User.password.contains(user_password)
+            )
+            for item in query_user:
+                clear()
+                print('Hello {} welcome back'.format(item.username))
+                logged_in()
             
         
-
-def search_user():
+        
+        
+def sign_in():
+    all_users = User.select()
+    #introduce user to signin
     print("""
-        Please enter your information below to sign in.
+        To get started sign in.
     """)
+    #prompt user to input username and password.
+    user_name = str(input('Username: '))
+    user_password = str(input('Password: '))
+    search_user(user_name, user_password)
     
-    confirmation(str(input('Email: ')))
-    confirmation(str(input('Password: ')))
+            
+    #then search for the user name in the database
     
     
     
     
     
-    
+    # if found prompt user for the email 
+    #if email found promt user to input password 
+    #if password is not correct loop through the process
 
+            
+                
+def logged_in():
+        user_input = input('Hi: ')
+                
+                
+                
 if __name__ == '__main__':
     user_db.connect()
     user_db.create_tables([User], safe=True)
