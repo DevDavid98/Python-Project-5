@@ -67,48 +67,41 @@ def create_user():
     
 def search_user(user_name = None, user_password = None):
     all_users = User.select()
-    for user in all_users:
-        if user_name == user.username and user_password == user.password:
-            query_user = all_users.where(
-                User.password.contains(user_password)
-            )
-            for item in query_user:
-                clear()
-                print('Hello {} welcome back'.format(item.username))
-                logged_in()
+    if user_name and user_password:
+        for user in all_users:
+            if user_name == user.username and user_password == user.password:
+                query_user = all_users.where(
+                    User.password.contains(user_password)
+                )
+                for item in query_user:
+                    clear()
+                    print('Hello {} welcome back'.format(item.username))
+                    logged_in()
+        if user_name != user.username and user_password != user.password:
+            print('Username and password are incorrect or user does not exist.')
+            
             
         
         
         
 def sign_in():
     all_users = User.select()
-    #introduce user to signin
     print("""
         To get started sign in.
     """)
-    #prompt user to input username and password.
     user_name = str(input('Username: '))
     user_password = str(input('Password: '))
     search_user(user_name, user_password)
-    
-            
-    #then search for the user name in the database
-    
-    
-    
-    
-    
-    # if found prompt user for the email 
-    #if email found promt user to input password 
-    #if password is not correct loop through the process
 
             
                 
 def logged_in():
-        user_input = input('Hi: ')
-                
-                
-                
+        #Show user menu
+        # Options = Clock in, clock out, lunch start, lunch end, break start, break end
+        # save time sheet to txt file or csv file
+        # see all times
+
+
 if __name__ == '__main__':
     user_db.connect()
     user_db.create_tables([User], safe=True)
