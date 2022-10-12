@@ -27,7 +27,7 @@ class Punctual(Model):
     
     class Meta:
         database = time_db
-        
+
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -66,24 +66,44 @@ def create_user():
     print('User created')
     
 def search_user(user_name = None, user_password = None):
+    attempts = 5
     all_users = User.select()
+    
     if user_name and user_password:
+        
         for user in all_users:
-            if user_name == user.username and user_password == user.password:
-                query_user = all_users.where(
-                    User.password.contains(user_password)
-                )
-                for item in query_user:
+            
+            if user_name == user.username:
+                
+                while user_password != user.password:
+                    
+                    user_input = input('Please enter the correct password or press "E" to exit: ')
+                    
+                    if user_input.lower() == 'e':
+                        clear()
+                        break
+                        
+                    elif user_input != user.password:
+                        attempts -= 1
+                        print('You have {} attempts left'.format(attempts))
+                        
+                        if attempts == 0:
+                            clear()
+                            print('You have exceeded the number of password attempts')
+                            break
+                            
+                    elif user_input == user.password:
+                        clear()
+                        print('Welcome to punctual {}'.format(user.username))
+                        logged_in() 
+                        
+                if user_password == user.password:
                     clear()
-                    print('Hello {} welcome back'.format(item.username))
+                    print('Welcome to punctual {}'.format(user.username))
                     logged_in()
-        if user_name != user.username and user_password != user.password:
-            print('Username and password are incorrect or user does not exist.')
+        
             
             
-        
-        
-        
 def sign_in():
     all_users = User.select()
     print("""
@@ -93,14 +113,8 @@ def sign_in():
     user_password = str(input('Password: '))
     search_user(user_name, user_password)
 
-            
-                
 def logged_in():
-        #Show user menu
-        # Options = Clock in, clock out, lunch start, lunch end, break start, break end
-        # save time sheet to txt file or csv file
-        # see all times
-
+    user_input = input('Hello: ')    
 
 if __name__ == '__main__':
     user_db.connect()
